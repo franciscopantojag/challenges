@@ -1,0 +1,15 @@
+{
+  "name": "y",
+  "version": "y",
+  "main": "index.js",
+  "author": "Francisco Pantoja <franciscopantojag98@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "devDependencies": {
+    "eslint": "^8.36.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.8.7"
+  }
+}

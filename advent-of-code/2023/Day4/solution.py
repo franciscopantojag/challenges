@@ -23,23 +23,23 @@ def part_two():
     with open(input_path) as f:
         copies_by_line: 'dict[int, int]' = dict()
         lines = f.readlines()
-        lines_no = len(lines)
+        cards_no = len(lines)
 
         for index, line_raw in enumerate(lines):
-            line_no = index + 1
+            card_no = index + 1
 
             [num_win, num_have] = get_nums_from_line(line_raw)
 
             number_of_intersections = get_number_of_intersections(
                 num_win, num_have)
 
-            line_occurrences = copies_by_line.get(line_no, 0) + 1
+            card_count = copies_by_line.get(card_no, 0) + 1
 
-            total += line_occurrences
+            total += card_count
 
-            if line_no <= lines_no:
-                for copy_target in range(line_no + 1, line_no + 1 + number_of_intersections):
-                    copies_by_line[copy_target] = line_occurrences + \
+            if card_no <= cards_no:
+                for copy_target in range(card_no + 1, card_no + 1 + number_of_intersections):
+                    copies_by_line[copy_target] = card_count + \
                         copies_by_line.get(copy_target, 0)
 
     return total

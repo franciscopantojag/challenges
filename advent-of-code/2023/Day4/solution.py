@@ -39,7 +39,7 @@ def part_two():
                     copies_by_line[copy_target] = 1 + line_copies_no + \
                         copies_by_line.get(copy_target, 0)
 
-    total_copies = sum(a for a in copies_by_line.values())
+    total_copies = sum(copies_by_line.values())
 
     return total_copies + lines_no
 

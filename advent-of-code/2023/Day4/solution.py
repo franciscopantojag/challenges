@@ -18,9 +18,10 @@ def part_one():
 
 
 def part_two():
-    copies_by_line: 'dict[int, int]' = dict()
+    total = 0
 
     with open(input_path) as f:
+        copies_by_line: 'dict[int, int]' = dict()
         lines = f.readlines()
         lines_no = len(lines)
 
@@ -32,16 +33,16 @@ def part_two():
             number_of_intersections = get_number_of_intersections(
                 num_win, num_have)
 
-            line_copies_no = copies_by_line.get(line_no, 0)
+            line_occurrences = copies_by_line.get(line_no, 0) + 1
+
+            total += line_occurrences
 
             if line_no <= lines_no:
                 for copy_target in range(line_no + 1, line_no + 1 + number_of_intersections):
-                    copies_by_line[copy_target] = 1 + line_copies_no + \
+                    copies_by_line[copy_target] = line_occurrences + \
                         copies_by_line.get(copy_target, 0)
 
-    total_copies = sum(copies_by_line.values())
-
-    return total_copies + lines_no
+    return total
 
 
 def main():

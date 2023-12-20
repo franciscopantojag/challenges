@@ -1,8 +1,8 @@
 def get_nums_from_line(line_raw: 'str'):
     nums_raw = line_raw.split(':')[1].strip().split('|')
-    [num_win, num_have] = [list(map(int, x.split())) for x in nums_raw]
+    [nums_win, nums_have] = [list(map(int, x.split())) for x in nums_raw]
 
-    return [num_win, num_have]
+    return [nums_win, nums_have]
 
 
 def get_number_of_intersections(win: 'list[int]', have: 'list[int]'):

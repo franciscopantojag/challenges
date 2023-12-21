@@ -8,11 +8,10 @@ def part_one():
     result: 'int | None' = None
 
     with open(input_path) as f:
-        lines = [line.strip()
-                 for line in f.readlines() if len(line.strip()) > 0]
-        seeds = [int(num) for num in lines[0].split(':')[1].split()]
+        lines = f.readlines()
 
         maps = get_maps(lines)
+        seeds = [int(num) for num in lines[0].split(':')[1].split()]
 
         for seed in seeds:
             seed_location = get_seed_location(maps, seed)

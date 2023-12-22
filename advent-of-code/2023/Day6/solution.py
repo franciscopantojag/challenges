@@ -1,23 +1,20 @@
+from functools import reduce
 from os import path
-
-from Day6.helpers import calc_win_ways, get_line_num, get_line_nums
+from helpers import calc_win_ways, get_line_num, get_line_nums
 
 input_path = path.join(path.dirname(__file__), 'input.txt')
 
 
 def part_one():
-    result = 1
     with open(input_path) as f:
         [line_times, line_record_distances] = f.readlines()
         times = get_line_nums(line_times)
         record_distances = get_line_nums(line_record_distances)
 
-        for index, time in enumerate(times):
-            record_distance = record_distances[index]
+        result = reduce(
+            lambda a, b: a * calc_win_ways(b[1], record_distances[b[0]]), enumerate(times), 1)
 
-            result *= calc_win_ways(time, record_distance)
-
-    return result
+        return result
 
 
 def part_two():

@@ -1,4 +1,9 @@
+from re import S
+
+
 card_ranking = [*[str(num) for num in range(2, 10)], 'T', 'J', 'Q', 'K', 'A']
+rank_by_card_order = {element: index for index,
+                      element in enumerate(card_ranking)}
 
 
 def card_appear(hand: 'str', num: 'int'):
@@ -11,6 +16,7 @@ def card_appear(hand: 'str', num: 'int'):
 
 
 def get_hand_cards_bid(line: 'str'):
+    line = line.strip()
     [hand, bid] = line.split(" ")
     cards = list(hand)
     bid = int(bid)
@@ -21,25 +27,13 @@ def define_ranking(hand: 'str'):
     hand_cards = list(hand)
     hand_cards_set_len = len(set(hand_cards))
 
-    if hand_cards_set_len == 1:
-        return 7
+    initial_dic = {
+        1: 7, 4: 2,
+        2: 6 if card_appear(hand, 4) else 5,
+        3: 4 if card_appear(hand, 3) else 3,
+    }
 
-    if hand_cards_set_len == 2:
-        if card_appear(hand, 4):
-            return 6
-
-        return 5
-
-    if hand_cards_set_len == 3:
-        if card_appear(hand, 3):
-            return 4
-
-        return 3
-
-    if hand_cards_set_len == 4:
-        return 2
-
-    return 1
+    return initial_dic.get(hand_cards_set_len, 1)
 
 
 def sorted_by(line1: 'str', line2: 'str'):
@@ -56,11 +50,11 @@ def sorted_by(line1: 'str', line2: 'str'):
     for index1, card1 in enumerate(cards1):
         card2 = cards2[index1]
 
-        index1 = card_ranking.index(card1)
-        index2 = card_ranking.index(card2)
+        rank1 = rank_by_card_order[card1]
+        rank2 = rank_by_card_order[card2]
 
-        if index2 != index1:
-            return index1 - index2
+        if rank2 != rank1:
+            return rank1 - rank2
 
     return 1
 

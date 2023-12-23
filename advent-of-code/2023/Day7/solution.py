@@ -8,7 +8,7 @@ input_path = path.join(path.dirname(__file__), 'input.txt')
 
 def part_one():
     with open(input_path) as f:
-        lines = [line.strip() for line in f.readlines()]
+        lines = f.readlines()
 
         cmp = cmp_to_key(sorted_by)
         lines.sort(key=cmp)

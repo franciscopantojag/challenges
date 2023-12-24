@@ -1,25 +1,34 @@
 from functools import reduce, cmp_to_key
 from os import path
-from helpers import sorted_by, reducer
+from typing import Literal
+from helpers import get_sorted_by, reducer
 
 
 input_path = path.join(path.dirname(__file__), 'input.txt')
 
 
-def part_one():
-    with open(input_path) as f:
-        lines = f.readlines()
+def get_part_fun(part: 'Literal[1,2]'):
+    def fun():
+        with open(input_path) as f:
+            lines = f.readlines()
+            cmp = cmp_to_key(get_sorted_by(part == 2))
+            lines.sort(key=cmp)
 
-        cmp = cmp_to_key(sorted_by)
-        lines.sort(key=cmp)
+            result = reduce(reducer, enumerate(lines), 0)
 
-        result = reduce(reducer, enumerate(lines), 0)
+            return result
+    return fun
 
-        return result
+
+def part_one(): return get_part_fun(1)()
+
+
+def part_two(): return get_part_fun(2)()
 
 
 def main():
     print(part_one())  # 254024898
+    print(part_two())  # 254115617
 
 
 if __name__ == '__main__':

@@ -1,26 +1,27 @@
+from typing import Literal
 JOKER_CARD = 'J'
 
-card_ranking = [*[str(num) for num in range(2, 10)],
-                'T', JOKER_CARD, 'Q', 'K', 'A']
+card_ranking = [
+    *[str(num) for num in range(2, 10)],
+    'T', JOKER_CARD, 'Q', 'K', 'A'
+]
 
 card_ranking_part_two = [
-    JOKER_CARD, * filter(lambda x: x != JOKER_CARD, card_ranking)
+    JOKER_CARD, *filter(lambda x: x != JOKER_CARD, card_ranking)
 ]
 
 
-rank_order_by_card = {
-    element: index for index, element in enumerate(card_ranking)
-}
+def get_rank_order(card_ranking: 'list[str]'):
+    return {element: index for index, element in enumerate(card_ranking)}
 
-rank_order_by_card_part_two = {element: index for index,
-                               element in enumerate(card_ranking_part_two)}
+
+rank_order_by_card = get_rank_order(card_ranking)
+rank_order_by_card_part_two = get_rank_order(card_ranking_part_two)
 
 
 def get_hand_bid(line: 'str'):
-    line = line.strip()
-    [hand, bid] = line.split(" ")
-    bid = int(bid)
-    return hand, bid
+    [hand, bid] = line.strip().split(" ")
+    return hand, int(bid)
 
 
 class Hand:
@@ -31,105 +32,49 @@ class Hand:
         self.cards_set_len = len(self.cards_set)
         self.has_joker = JOKER_CARD in self.cards_set
 
-        self.random_card_no_joker = self.hand[0]
-        card_appear_by_card: 'dict[str, int]' = {}
-        cards_by_card_appear: 'dict[int, list[str]]' = {}
+        self.card_appear_by_card: 'dict[str, int]' = {}
+        self.cards_by_card_appear: 'dict[int, list[str]]' = {}
 
         for card in self.cards_set:
-            if card != JOKER_CARD:
-                self.random_card_no_joker = card
-
             card_appear = len(self.hand.split(card)) - 1
-            card_appear_by_card[card] = card_appear
+            self.card_appear_by_card[card] = card_appear
 
-            card_li = cards_by_card_appear.get(card_appear, [])
-            if card not in card_li:
-                card_li.append(card)
-            cards_by_card_appear[card_appear] = card_li
+            self.cards_by_card_appear[card_appear] = [
+                *self.cards_by_card_appear.get(card_appear, []),
+                card
+            ]
 
-        self.card_appear_by_card = card_appear_by_card
-        self.cards_by_card_appear = cards_by_card_appear
+    def get_rank(self, is_part_two=False):
+        should_optimize = self.has_joker and is_part_two
 
-        initial_dic = {
-            1: 7, 4: 2,
-            2: 6 if self.cards_by_card_appear.get(4) else 5,
-            3: 4 if self.cards_by_card_appear.get(3) else 3,
+        if not should_optimize:
+            mapper = {
+                1: 7, 4: 2,
+                2: 6 if self.cards_by_card_appear.get(4) else 5,
+                3: 4 if self.cards_by_card_appear.get(3) else 3,
+            }
+
+            return mapper.get(self.cards_set_len, 1)
+
+        joker_appear = self.card_appear_by_card.get(JOKER_CARD, 0)
+
+        should_return_5_if_set_has_3 = joker_appear == 1 \
+            and not self.cards_by_card_appear.get(3)
+
+        mapper = {
+            1: 7, 2: 7, 4: 4,
+            3: 5 if should_return_5_if_set_has_3 else 6
         }
-
-        self.pure_ranking = initial_dic.get(self.cards_set_len, 1)
-
-    def get_card_appearences(self, card: 'str'):
-        return self.card_appear_by_card.get(card, 0)
-
-
-def get_optimized_hand(hand: Hand):
-    def get_optimized_hand_str(hand: Hand):
-        joker_appear = hand.get_card_appearences(JOKER_CARD)
-        if joker_appear == 0:
-            raise Exception('NO JOKER to optimize')
-
-        hand_str = hand.hand
-
-        if hand.cards_set_len == 1:
-            return hand_str
-
-        if hand.cards_set_len == 2:
-            return hand.random_card_no_joker * 5
-
-        if hand.cards_set_len == 3:
-            # 3 - 1 -1
-            if joker_appear == 3:
-                return hand_str.replace(JOKER_CARD, hand.random_card_no_joker)
-
-            # 2 - 2 - 1
-            # 2 - 1 - 2
-            if joker_appear == 2:
-                [card_to_replace, joker] = hand.cards_by_card_appear[2]
-                if joker != JOKER_CARD:
-                    [joker, card_to_replace] = [card_to_replace, joker]
-
-                return hand_str.replace(JOKER_CARD, card_to_replace)
-
-            # 1 - 3 - 1
-            # 1 - 2 - 2
-            # 1 - 1 - 3
-            if joker_appear == 1:
-                cards_appear_three = hand.cards_by_card_appear.get(3)
-                if cards_appear_three:
-                    card_appear_three = cards_appear_three[0]
-                    return hand_str.replace(JOKER_CARD, card_appear_three)
-
-                # 1 - 2 - 2
-                card_appear_twice = hand.cards_by_card_appear[2][0]
-                return hand_str.replace(JOKER_CARD, card_appear_twice)
-
-        if hand.cards_set_len == 4:
-            if joker_appear == 2:
-                return hand_str.replace(JOKER_CARD, hand.random_card_no_joker)
-
-            card_appear_twice = hand.cards_by_card_appear[2][0]
-            return hand_str.replace(JOKER_CARD, card_appear_twice)
-
-        return hand_str.replace(JOKER_CARD, hand.random_card_no_joker)
-
-    return Hand(get_optimized_hand_str(hand))
+        return mapper.get(self.cards_set_len, 2)
 
 
 def get_sorted_by(is_part_two=False):
     def sorted_by(line1: 'str', line2: 'str'):
-        hand1_str, bid1 = get_hand_bid(line1)
-        hand2_str, bid2 = get_hand_bid(line2)
+        hand1 = Hand(get_hand_bid(line1)[0])
+        hand2 = Hand(get_hand_bid(line2)[0])
 
-        hand1 = Hand(hand1_str)
-        hand2 = Hand(hand2_str)
-
-        rank1 = hand1.pure_ranking
-        if is_part_two and hand1.has_joker:
-            rank1 = get_optimized_hand(hand1).pure_ranking
-
-        rank2 = hand2.pure_ranking
-        if is_part_two and hand2.has_joker:
-            rank2 = get_optimized_hand(hand2).pure_ranking
+        rank1 = hand1.get_rank(is_part_two)
+        rank2 = hand2.get_rank(is_part_two)
 
         if rank1 != rank2:
             return rank1 - rank2
@@ -152,6 +97,6 @@ def get_sorted_by(is_part_two=False):
 def reducer(acc: 'int', el: 'tuple[int, str]'):
     index, line = el
     rank = index + 1
-    _, bid = get_hand_bid(line)
+    bid = get_hand_bid(line)[1]
 
     return acc + (bid * rank)

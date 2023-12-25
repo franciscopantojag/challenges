@@ -3,12 +3,14 @@ JOKER_CARD = 'J'
 card_ranking = [*[str(num) for num in range(2, 10)],
                 'T', JOKER_CARD, 'Q', 'K', 'A']
 
-card_ranking_part_two = [JOKER_CARD, *
-                         filter(lambda x: x != JOKER_CARD, card_ranking)]
+card_ranking_part_two = [
+    JOKER_CARD, * filter(lambda x: x != JOKER_CARD, card_ranking)
+]
 
 
-rank_order_by_card = {element: index for index,
-                      element in enumerate(card_ranking)}
+rank_order_by_card = {
+    element: index for index, element in enumerate(card_ranking)
+}
 
 rank_order_by_card_part_two = {element: index for index,
                                element in enumerate(card_ranking_part_two)}

@@ -1,4 +1,3 @@
-from typing import Literal
 JOKER_CARD = 'J'
 
 card_ranking = [
@@ -7,7 +6,7 @@ card_ranking = [
 ]
 
 card_ranking_part_two = [
-    JOKER_CARD, *filter(lambda x: x != JOKER_CARD, card_ranking)
+    JOKER_CARD, *[card for card in card_ranking if card != JOKER_CARD]
 ]
 
 

@@ -10,12 +10,10 @@ input_path = path.join(path.dirname(__file__), 'input.txt')
 def get_part_fun(part: 'Literal[1,2]'):
     def fun():
         with open(input_path) as f:
-            lines = f.readlines()
             cmp = cmp_to_key(get_sorted_by(part == 2))
-            lines.sort(key=cmp)
+            sorted_lines = sorted(f.readlines(), key=cmp)
 
-            result = reduce(reducer, enumerate(lines), 0)
-
+            result = reduce(reducer, enumerate(sorted_lines), 0)
             return result
     return fun
 

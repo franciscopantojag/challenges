@@ -1,4 +1,3 @@
-from curses.ascii import isdigit
 from functools import reduce
 import re
 from os import path
@@ -7,42 +6,27 @@ input_path = path.join(path.dirname(__file__), 'input.txt')
 
 
 def complete_num_given_pos(symb_col: 'int', line: 'str'):
-    if not ((symb_col >= 0) and (symb_col <= len(line) - 1)):
+    is_col_in_line = (symb_col >= 0) and (symb_col <= len(line) - 1)
+    if not is_col_in_line:
         return
 
     num_str = line[symb_col]
     if not num_str.isdigit():
         return
 
-    idx = symb_col + 1
+    idx_right = symb_col + 1
 
-    while idx <= (len(line) - 1):
-        curr_char = line[idx]
-        if curr_char.isdigit():
-            num_str += curr_char
-        else:
-            break
-        idx += 1
+    while idx_right <= (len(line) - 1) and line[idx_right].isdigit():
+        num_str += line[idx_right]
+        idx_right += 1
 
-    idx = symb_col - 1
+    idx_left = symb_col - 1
 
-    while idx >= 0:
-        curr_char = line[idx]
-        if curr_char.isdigit():
-            num_str = f'{curr_char}{num_str}'
-
-        else:
-            break
-        idx -= 1
+    while idx_left >= 0 and line[idx_left].isdigit():
+        num_str = f'{line[idx_left]}{num_str}'
+        idx_left -= 1
 
     return int(num_str)
-
-
-def get_nums_for_columns(cols: 'list[int]', line: 'str'):
-    res_raw = [complete_num_given_pos(col, line) for col in cols]
-    result = [num for num in res_raw if num != None]
-
-    return result
 
 
 def get_nums_for_line(symb_col: 'int', line: 'str'):
@@ -50,7 +34,10 @@ def get_nums_for_line(symb_col: 'int', line: 'str'):
     if not line[symb_col].isdigit():
         cols += [symb_col + 1, symb_col - 1]
 
-    return get_nums_for_columns(cols, line)
+    res_raw = [complete_num_given_pos(col, line) for col in cols]
+    result = [num for num in res_raw if num != None]
+
+    return result
 
 
 def get_results():
@@ -76,8 +63,8 @@ def get_results():
                     lines_to_process.append(lines[row + 1])
 
                 nums_for_this_symbol = reduce(
-                    lambda acc, line_to_process: acc + get_nums_for_line(
-                        symb_col, line_to_process),
+                    lambda acc, line_to_process:
+                        acc + get_nums_for_line(symb_col, line_to_process),
                     lines_to_process,
                     []
                 )

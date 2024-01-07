@@ -1,3 +1,6 @@
+import math
+
+
 def get_nums_from_line(line_raw: 'str'):
     nums_raw = line_raw.split(':')[1].strip().split('|')
     [nums_win, nums_have] = [list(map(int, x.split())) for x in nums_raw]
@@ -13,4 +16,4 @@ def get_score(number_of_intersections: 'int'):
     if number_of_intersections == 0:
         return 0
 
-    return 2 ** (number_of_intersections - 1)
+    return int(math.pow(2, number_of_intersections - 1))

@@ -4,17 +4,21 @@ from helpers import get_nums_from_line, get_number_of_intersections, get_score
 input_path = path.join(path.dirname(__file__), 'input.txt')
 
 
+def get_score_per_line(line: 'str'):
+    line = line.strip()
+    [nums_win, nums_have] = get_nums_from_line(line)
+
+    number_of_intersections = get_number_of_intersections(
+        nums_win, nums_have
+    )
+
+    return get_score(number_of_intersections)
+
+
 def part_one():
-    result = 0
     with open(input_path) as f:
-        for line_raw in f.readlines():
-            [nums_win, nums_have] = get_nums_from_line(line_raw)
-
-            number_of_intersections = get_number_of_intersections(
-                nums_win, nums_have)
-
-            result += get_score(number_of_intersections)
-    return result
+        result = sum(get_score_per_line(line) for line in f.readlines())
+        return result
 
 
 def part_two():

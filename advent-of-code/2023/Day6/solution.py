@@ -7,21 +7,24 @@ input_path = path.join(path.dirname(__file__), 'input.txt')
 
 def part_one():
     with open(input_path) as f:
-        [line_times, line_record_distances] = f.readlines()
-        times = get_line_nums(line_times)
-        record_distances = get_line_nums(line_record_distances)
+        [times, record_distances] = [
+            get_line_nums(line) for line in f.readlines()
+        ]
 
         result = reduce(
-            lambda a, b: a * calc_win_ways(b[1], record_distances[b[0]]), enumerate(times), 1)
+            lambda a, b: a * calc_win_ways(b[1], record_distances[b[0]]),
+            enumerate(times),
+            1
+        )
 
         return result
 
 
 def part_two():
     with open(input_path) as f:
-        [line_time, line_record_distance] = f.readlines()
-        time = get_line_num(line_time)
-        record_distance = get_line_num(line_record_distance)
+        [time, record_distance] = [
+            get_line_num(line) for line in f.readlines()
+        ]
 
         return calc_win_ways(time, record_distance)
 

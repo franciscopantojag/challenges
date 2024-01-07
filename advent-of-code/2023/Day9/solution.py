@@ -10,8 +10,6 @@ def part_one():
             numbers = [int(num) for num in line.strip().split()]
             numbers_list = [numbers]
 
-            line_result = numbers[-1]
-
             for idx in range(len(numbers) - 1):
                 lista: 'list[int]' = []
                 list_num = numbers_list[idx]
@@ -19,10 +17,10 @@ def part_one():
                     next_num = list_num[index+1]
                     lista.append(next_num - num)
 
-                line_result += lista[-1]
+                final_result += lista[-1]
                 numbers_list.append(lista)
 
-            final_result += line_result
+            final_result += numbers[-1]
 
     return final_result
 
@@ -33,21 +31,18 @@ def part_two():
         for line in f.readlines():
             numbers = [int(num) for num in line.strip().split()]
             numbers_list = [numbers]
+            line_result = numbers[0] * -1
 
             for idx in range(len(numbers) - 1):
-                lista: 'list[int]' = []
                 list_num = numbers_list[idx]
-                for index, num in enumerate(list_num[0:-1]):
-                    next_num = list_num[index+1]
-                    lista.append(next_num - num)
+                lista = [
+                    list_num[index+1] - num for index, num in enumerate(list_num[0:-1])
+                ]
 
                 numbers_list.append(lista)
+                line_result = (lista[0] + line_result) * -1
 
-            acc = 0
-            for t in reversed(numbers_list):
-                fir = t[0]
-                acc = fir - acc
-            final_result += acc
+            final_result -= (line_result)
 
     return final_result
 

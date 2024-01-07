@@ -5,21 +5,17 @@ input_path = path.join(path.dirname(__file__), 'input.txt')
 
 
 def part_one():
-    result: 'int | None' = None
-
     with open(input_path) as f:
         lines = f.readlines()
 
         maps = get_maps(lines)
         seeds = [int(num) for num in lines[0].split(':')[1].split()]
 
-        for seed in seeds:
-            seed_location = get_seed_location(maps, seed)
+        result = min(
+            get_seed_location(maps, seed) for seed in seeds
+        )
 
-            if result == None or seed_location < result:
-                result = seed_location
-
-    return result
+        return result
 
 
 def main():

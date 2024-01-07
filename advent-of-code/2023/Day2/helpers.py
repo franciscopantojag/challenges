@@ -1,21 +1,42 @@
+from functools import reduce
 import re
 
+BAG_POSSIBLE = {
+    'red': 12,
+    'green': 13,
+    'blue': 14
+}
 
-def get_game_id(line: 'str'):
-    game_id_match = re.search('Game\\s\\d+', line)
-    if game_id_match is None:
-        return None
-
-    game_id = int(game_id_match.group().split(' ')[1])
-
-    return game_id
+COLORS = set(BAG_POSSIBLE.keys())
 
 
 def get_max_color(line: 'str', color: 'str'):
-    reg_exp = f'\\d+\\s{color}'
-    color_matches: 'list[str]' = re.findall(reg_exp, line)
+    color_with_values: 'list[str]' = re.split(
+        '[,;]', line.strip().split(':')[1].strip()
+    )
 
-    max_color = max([int(color_match.split(' ')[0])
-                    for color_match in color_matches])
+    resp = max(
+        int(st.strip().split()[0]) for st in color_with_values if color in st
+    )
 
-    return max_color
+    return resp
+
+
+def get_game_id(line: 'str'):
+    game_id_pos = all(
+        get_max_color(line, color) <= BAG_POSSIBLE[color] for color in COLORS
+    )
+
+    game_id_raw = int(line.strip().split(':')[0].split()[1])
+
+    return game_id_raw if game_id_pos else 0
+
+
+def get_power_per_line(line: 'str'):
+    power_per_line = reduce(
+        lambda acc, color: acc * get_max_color(line, color),
+        COLORS,
+        1
+    )
+
+    return power_per_line
